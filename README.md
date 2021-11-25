@@ -1,8 +1,11 @@
-# sudoku
+# Sudoku
 
-A new Flutter application.
+A simple sudoku game made using flutter
 
-## TODO: 
-- implement generator
-- or implement asset games
-- correct you won time
+## Screenshots  
+
+<p>
+  <img src="screenshots/screen1.png" width="200" />
+  <img src="screenshots/screen2.png" width="200" /> 
+  <img src="screenshots/screen3.png" width="200" />
+</p>

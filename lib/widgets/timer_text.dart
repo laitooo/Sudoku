@@ -11,6 +11,7 @@ class TimerText extends StatefulWidget {
 
 class _TimerTextState extends State<TimerText> {
   int seconds = 0;
+  bool isDisposed = false;
 
   @override
   void initState() {
@@ -40,12 +41,18 @@ class _TimerTextState extends State<TimerText> {
 
   void updateTimer() {
     Future.delayed(Duration(seconds: 1), () {
-      setState(() {
-        seconds++;
-      });
-      if (widget.isRunning) {
+      if (widget.isRunning && !isDisposed) {
+        setState(() {
+          seconds++;
+        });
         updateTimer();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    isDisposed = true;
   }
 }

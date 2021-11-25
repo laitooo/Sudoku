@@ -22,88 +22,112 @@ class PlayScreen extends StatefulWidget {
 class _PlayScreenState extends State<PlayScreen> {
   bool isPlaying = true;
   Board board;
+  DateTime startTime;
 
   @override
   void initState() {
     super.initState();
+    startTime = DateTime.now();
     board = Generator().generateBoard(widget.mode);
   }
 
   @override
   Widget build(BuildContext context) {
     final size = (MediaQuery.of(context).size.width - 50) / 9;
-    return Scaffold(
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 30, 0, 10),
-              child: IconButton(
-                icon: Icon(Icons.close),
-                iconSize: 30,
-                color: Colors.black.withOpacity(0.5),
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) {
-                      return HomeScreen();
-                    }),
-                  );
-                },
-              ),
-            ),
-            Center(child: TimerText(isRunning: isPlaying)),
-            SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Table(
-                children: getRows(size),
-                border: TableBorder.all(
-                  color: Colors.black,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) {
+            return HomeScreen();
+          }),
+        );
+        return false;
+      },
+      child: Scaffold(
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 30, 0, 10),
+                child: IconButton(
+                  icon: Icon(Icons.close),
+                  iconSize: 30,
+                  color: Colors.black.withOpacity(0.5),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) {
+                        return HomeScreen();
+                      }),
+                    );
+                  },
                 ),
               ),
-            ),
-            SizedBox(height: 50),
-            Center(
-              child: MainButton(
-                text: 'Finish',
-                onPressed: () {
-                  if (board.isSolutionEmpty()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Container(
-                          child: Text('You have missing fields'),
-                        ),
-                      ),
-                    );
-                  } else {
-                    if (board.hasRightSolution()) {
-                      setState(() {
-                        isPlaying = false;
-                      });
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) {
-                          return YouWonScreen(
-                            seconds: 24,
-                            minutes: 2,
-                            mode: widget.mode,
-                          );
-                        }),
-                      );
-                    } else {
+              Center(child: TimerText(isRunning: isPlaying)),
+              SizedBox(height: 50),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Table(
+                  children: getRows(size),
+                  border: TableBorder.symmetric(
+                    outside: BorderSide(
+                      color: Colors.black,
+                      width: 2,
+                    ),
+                    inside: BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 50),
+              Center(
+                child: MainButton(
+                  text: 'Finish',
+                  onPressed: () {
+                    if (board.isSolutionEmpty()) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Container(
-                            child: Text('You have incorrect fields'),
+                            child: Text('You have missing fields'),
                           ),
                         ),
                       );
+                    } else {
+                      if (board.hasRightSolution()) {
+                        setState(() {
+                          isPlaying = false;
+                        });
+
+                        DateTime finishTime = DateTime.now();
+                        int seconds = (finishTime.millisecondsSinceEpoch - startTime.millisecondsSinceEpoch) ~/ 1000;
+                        int minutes = seconds ~/ 60;
+
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) {
+                            return YouWonScreen(
+                              seconds: seconds % 60,
+                              minutes: minutes,
+                              mode: widget.mode,
+                            );
+                          }),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Container(
+                              child: Text('You have incorrect fields'),
+                            ),
+                          ),
+                        );
+                      }
                     }
-                  }
-                },
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -113,6 +137,16 @@ class _PlayScreenState extends State<PlayScreen> {
     return Container(
       width: size,
       height: size,
+      decoration: BoxDecoration(
+        border: (j == 3 || j == 6)
+            ? Border(
+                left: BorderSide(
+                  color: Colors.black,
+                  width: 2,
+                ),
+              )
+            : null,
+      ),
       child: InkWell(
         child: Center(
           child: Text(
@@ -157,9 +191,20 @@ class _PlayScreenState extends State<PlayScreen> {
   List<TableRow> getRows(double size) {
     return List.generate(
       9,
-      (index) => TableRow(
-        children: getRowCells(index, size),
-      ),
+      (index) {
+        return TableRow(
+          children: getRowCells(index, size),
+          decoration: BoxDecoration(
+              border: (index == 3 || index == 6)
+                  ? Border(
+                      top: BorderSide(
+                        color: Colors.black,
+                        width: 2,
+                      ),
+                    )
+                  : null),
+        );
+      },
     );
   }
 
