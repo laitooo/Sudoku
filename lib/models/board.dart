@@ -71,12 +71,12 @@ class Board {
   }
 
   bool isSolutionEmpty() {
-    bool isEmpty = false;
-    mySolution.map((e) {
-      if (e.contains(0)) {
-        isEmpty = true;
+    for (int i=0; i<9; i++) {
+      for (int j=0; j<9; j++) {
+        if (isSolved[i] [j]) continue;
+        if (mySolution[i][j] == 0) return true;
       }
-    });
-    return isEmpty;
+    }
+    return false;
   }
 }
