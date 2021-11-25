@@ -67,8 +67,15 @@ class _PlayScreenState extends State<PlayScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Table(
                   children: getRows(size),
-                  border: TableBorder.all(
-                    color: Colors.black,
+                  border: TableBorder.symmetric(
+                    outside: BorderSide(
+                      color: Colors.black,
+                      width: 2,
+                    ),
+                    inside: BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
                   ),
                 ),
               ),
@@ -123,6 +130,16 @@ class _PlayScreenState extends State<PlayScreen> {
     return Container(
       width: size,
       height: size,
+      decoration: BoxDecoration(
+        border: (j == 3 || j == 6)
+            ? Border(
+                left: BorderSide(
+                  color: Colors.black,
+                  width: 2,
+                ),
+              )
+            : null,
+      ),
       child: InkWell(
         child: Center(
           child: Text(
@@ -167,9 +184,20 @@ class _PlayScreenState extends State<PlayScreen> {
   List<TableRow> getRows(double size) {
     return List.generate(
       9,
-      (index) => TableRow(
-        children: getRowCells(index, size),
-      ),
+      (index) {
+        return TableRow(
+          children: getRowCells(index, size),
+          decoration: BoxDecoration(
+              border: (index == 3 || index == 6)
+                  ? Border(
+                      top: BorderSide(
+                        color: Colors.black,
+                        width: 2,
+                      ),
+                    )
+                  : null),
+        );
+      },
     );
   }
 
