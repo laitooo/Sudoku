@@ -32,78 +32,88 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   Widget build(BuildContext context) {
     final size = (MediaQuery.of(context).size.width - 50) / 9;
-    return Scaffold(
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 30, 0, 10),
-              child: IconButton(
-                icon: Icon(Icons.close),
-                iconSize: 30,
-                color: Colors.black.withOpacity(0.5),
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) {
-                      return HomeScreen();
-                    }),
-                  );
-                },
-              ),
-            ),
-            Center(child: TimerText(isRunning: isPlaying)),
-            SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Table(
-                children: getRows(size),
-                border: TableBorder.all(
-                  color: Colors.black,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) {
+            return HomeScreen();
+          }),
+        );
+        return false;
+      },
+      child: Scaffold(
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 30, 0, 10),
+                child: IconButton(
+                  icon: Icon(Icons.close),
+                  iconSize: 30,
+                  color: Colors.black.withOpacity(0.5),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) {
+                        return HomeScreen();
+                      }),
+                    );
+                  },
                 ),
               ),
-            ),
-            SizedBox(height: 50),
-            Center(
-              child: MainButton(
-                text: 'Finish',
-                onPressed: () {
-                  if (board.isSolutionEmpty()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Container(
-                          child: Text('You have missing fields'),
-                        ),
-                      ),
-                    );
-                  } else {
-                    if (board.hasRightSolution()) {
-                      setState(() {
-                        isPlaying = false;
-                      });
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) {
-                          return YouWonScreen(
-                            seconds: 24,
-                            minutes: 2,
-                            mode: widget.mode,
-                          );
-                        }),
-                      );
-                    } else {
+              Center(child: TimerText(isRunning: isPlaying)),
+              SizedBox(height: 50),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Table(
+                  children: getRows(size),
+                  border: TableBorder.all(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(height: 50),
+              Center(
+                child: MainButton(
+                  text: 'Finish',
+                  onPressed: () {
+                    if (board.isSolutionEmpty()) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Container(
-                            child: Text('You have incorrect fields'),
+                            child: Text('You have missing fields'),
                           ),
                         ),
                       );
+                    } else {
+                      if (board.hasRightSolution()) {
+                        setState(() {
+                          isPlaying = false;
+                        });
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) {
+                            return YouWonScreen(
+                              seconds: 24,
+                              minutes: 2,
+                              mode: widget.mode,
+                            );
+                          }),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Container(
+                              child: Text('You have incorrect fields'),
+                            ),
+                          ),
+                        );
+                      }
                     }
-                  }
-                },
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
