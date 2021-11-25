@@ -1,7 +1,7 @@
 class Sudoku {
   List<List<int>> cells;
   int tries;
-  int solved  = 0;
+  int solved = 0;
 
   Sudoku(this.tries) {
     cells = List.generate(9, (index) => List.generate(9, (index) => 0));
@@ -13,7 +13,7 @@ class Sudoku {
       if (row > 8) break;
       solve(row, col);
     }
-    print('*****'*10);
+    print('*****' * 10);
     print('solved cells = ' + solved.toString());
   }
 
@@ -39,7 +39,7 @@ class Sudoku {
   }
 
   bool checkRow(int row, int num) {
-    for (int i=0; i<9; i++) {
+    for (int i = 0; i < 9; i++) {
       if (cells[row][i] == num) {
         //print('error row : row = $row col = $i\n num = $num cell = ${cells[row][i]}');
         //print(this.toString());
@@ -50,7 +50,7 @@ class Sudoku {
   }
 
   bool checkCol(int col, int num) {
-    for (int i=0; i<9; i++) {
+    for (int i = 0; i < 9; i++) {
       if (cells[i][col] == num) {
         //print('error col : row = $i col = $col\n num = $num cell = ${cells[i][col]}');
         //print(this.toString());
@@ -65,7 +65,7 @@ class Sudoku {
     //print('test box : row = $row col = $col a = $a b = $b');
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        if (cells[(a * 3)+ i][(b * 3) + j] == num) {
+        if (cells[(a * 3) + i][(b * 3) + j] == num) {
           //print('error box : row = $row col = $col a = $a b = $b \n num = $num '
           //    'cell = ${cells[(a*3) +i][(b*3) + j]}');
           //print(this.toString());
@@ -92,8 +92,8 @@ class Sudoku {
   @override
   String toString() {
     String tmp = '';
-    for (int i=0; i<9; i++) {
-      for (int j=0; j<9; j++) {
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
         tmp += cells[i][j].toString() + ' ';
       }
       tmp += '\n';

@@ -35,7 +35,7 @@ class Generator {
   }
 
   generateSudoku() {
-    while(true) {
+    while (true) {
       final sudoku = Sudoku(2000);
       if (sudoku.solved == 81) return sudoku.cells;
     }
