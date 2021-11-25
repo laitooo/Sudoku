@@ -22,10 +22,12 @@ class PlayScreen extends StatefulWidget {
 class _PlayScreenState extends State<PlayScreen> {
   bool isPlaying = true;
   Board board;
+  DateTime startTime;
 
   @override
   void initState() {
     super.initState();
+    startTime = DateTime.now();
     board = Generator().generateBoard(widget.mode);
   }
 
@@ -97,11 +99,16 @@ class _PlayScreenState extends State<PlayScreen> {
                         setState(() {
                           isPlaying = false;
                         });
+
+                        DateTime finishTime = DateTime.now();
+                        int seconds = (finishTime.millisecondsSinceEpoch - startTime.millisecondsSinceEpoch) ~/ 1000;
+                        int minutes = seconds ~/ 60;
+
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) {
                             return YouWonScreen(
-                              seconds: 24,
-                              minutes: 2,
+                              seconds: seconds % 60,
+                              minutes: minutes,
                               mode: widget.mode,
                             );
                           }),
